@@ -41,6 +41,12 @@
 		<header-file src="PushNotification.h" />
 
 		<source-file src="PushNotification.m" />
+
+		<header-file src="OpenUDID.h" />
+
+		<source-file src="OpenUDID.m" />
+
+		
 	</platform>
 
 </plugin>

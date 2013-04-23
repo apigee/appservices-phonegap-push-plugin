@@ -1086,6 +1086,58 @@ NSString *g_deviceUUID = nil;
     return [self httpTransaction:url op:kUGHTTPDelete opData:nil];
 }
 
+/*************************** REMOTE PUSH NOTIFICATIONS ***************************/
+/*************************** REMOTE PUSH NOTIFICATIONS ***************************/
+/*************************** REMOTE PUSH NOTIFICATIONS ***************************/
+
+- (UGClientResponse *)setDevicePushToken:(NSData *)newDeviceToken forNotifier:(NSString *)notifier
+{
+    // Pull the push token string out of the device token data
+    NSString *tokenString = [[[newDeviceToken description]
+                              stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]
+                             stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    // Register device and push token to App Services
+    NSString *deviceId = [UGClient getUniqueDeviceID];
+    
+    // create/update device - use deviceId for App Services entity UUID
+    NSMutableDictionary *entity = [[NSMutableDictionary alloc] init];
+    [entity setObject: @"device"   forKey: @"type"];
+    [entity setObject: deviceId    forKey: @"uuid"];
+    
+    NSString *notifierKey = [notifier stringByAppendingString: @".notifier.id"];
+    [entity setObject: tokenString forKey: notifierKey];
+    
+    return [self updateEntity: deviceId entity: entity];
+}
+
+- (UGClientResponse *)pushAlert:(NSString *)message
+                      withSound:(NSString *)sound
+                             to:(NSString *)path
+                  usingNotifier:(NSString *)notifier
+{
+    NSDictionary *apsDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                             message, @"alert",
+                             sound, @"sound",
+                             nil];
+    
+    NSDictionary *notifierDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  apsDict, @"aps",
+                                  nil];
+    
+    NSDictionary *payloadsDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  notifierDict, notifier,
+                                  nil];
+    
+    NSString *notificationsPath = [path stringByAppendingString: @"/notifications"];
+    
+    NSMutableDictionary *entity = [[NSMutableDictionary alloc] init];
+    [entity setObject: notificationsPath forKey: @"type"];
+    [entity setObject: payloadsDict      forKey: @"payloads"];
+    
+    return [self createEntity: entity];
+}
+
 
 /*************************** SERVER-SIDE STORAGE ***************************/
 /*************************** SERVER-SIDE STORAGE ***************************/

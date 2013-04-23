@@ -131,6 +131,25 @@ Using this plugin requires [Cordova Android](https://github.com/apache/incubator
     });
 
 
+`registerWithPushProvider()` performs a registration with a third party push provider. Currently only Apigee App Services is supported.
+
+    pushNotification.registerDevice({alert:true, badge:true, sound:true}, function(status) {
+        console.log(status);
+        if(status.deviceToken) {
+            var options = {
+                "provider":"apigee",
+                "orgName":"YOUR APIGEE.COM USERNAME",
+                "appName":"YOU APIGEE.COM APP",
+                "token":status.deviceToken
+            };
+
+            pushNotification.registerWithPushProvider(options, function(status){
+                console.log(status);
+            });
+        }
+    });
+
+
 `getPendingNotifications()` should be used when your application starts or become active (from the background) to retrieve notifications that have been pushed while the application was inactive or offline. For now, it can only retrieve the notification that the user has interacted with while entering the app. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by type.
 
 
