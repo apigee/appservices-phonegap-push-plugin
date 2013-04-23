@@ -1,6 +1,8 @@
 # Cordova PushNotification Plugin #
 by [Olivier Louvignes](http://olouv.com)
 
+This is a fork by Matthew Dobson for Apigee Corporation. We've added third party push notification support.
+
 ## DESCRIPTION ##
 
 * This plugin provides a simple way to use Apple Push Notifications (or Remote Notifications) from IOS.
@@ -219,6 +221,7 @@ The latest code (my fork) will always be [here](https://github.com/mgcrea/cordov
     The MIT License
 
     Copyright (c) 2012 Olivier Louvignes
+    Copyright (c) 2013 Apigee Corporation where applicable
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
