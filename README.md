@@ -151,6 +151,26 @@ Using this plugin requires [Cordova Android](https://github.com/apache/incubator
         }
     });
 
+`getApigeeDeviceId()` retrieves the Apigee based UUID for the current device.
+
+    pushNotification.getApigeeDeviceId(function(results){
+        console.log(results.deviceId);
+    });
+
+`pushNotificationToDevice()` sets up a push notification to a specific device. Please note the device id is the Apigee based UUID.
+
+    var options = {
+        "provider":"apigee",
+        "orgName":"YOUR APIGEE.COM USERNAME",
+        "appName":"YOUR APIGEE.COM APP",
+        "deviceId":results.deviceId,
+        "message":"Hello!"
+    };
+
+    pushNotification.pushNotificationToDevice(options, function(result){
+       console.log(result);
+    });
+
 
 `getPendingNotifications()` should be used when your application starts or become active (from the background) to retrieve notifications that have been pushed while the application was inactive or offline. For now, it can only retrieve the notification that the user has interacted with while entering the app. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by type.
 

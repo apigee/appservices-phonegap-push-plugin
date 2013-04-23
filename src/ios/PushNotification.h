@@ -31,5 +31,8 @@
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command;
 - (void)cancelAllLocalNotifications:(CDVInvokedUrlCommand *)command;
 - (void)getDeviceUniqueIdentifier:(CDVInvokedUrlCommand *)command;
+-(void)getDeviceId:(CDVInvokedUrlCommand*)command;
+-(void)pushNotificationToDevice:(CDVInvokedUrlCommand *)command;
+-(void)registerWithPushProvider:(CDVInvokedUrlCommand *)command;
 
 @end

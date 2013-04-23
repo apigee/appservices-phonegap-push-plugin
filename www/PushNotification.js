@@ -47,6 +47,14 @@
 		cordova.exec(callback, callback, "PushNotification", "getDeviceUniqueIdentifier", []);
 	};
 
+    PushNotification.prototype.pushNotificationToDevice = function(options, callback){
+        cordova.exec(callback, callback, "PushNotification", "pushNotificationToDevice", [options]);
+    };
+ 
+    PushNotification.prototype.getApigeeDeviceId = function(callback){
+        cordova.exec(callback, callback,"PushNotification", "getDeviceId", []);
+    };
+ 
 	// Event spawned when a notification is received while the application is active
 	PushNotification.prototype.notificationCallback = function(notification) {
 		var ev = document.createEvent('HTMLEvents');

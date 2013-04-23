@@ -90,6 +90,44 @@ NSString * notifier = @"apple";
 
 }
 
+-(void)pushNotificationToDevice:(CDVInvokedUrlCommand *)command {
+    [self.callbackIds setValue:command.callbackId forKey:@"pushNotificationToDevice"];
+    NSDictionary *options = [command.arguments objectAtIndex:0];
+    NSString * orgName = [options objectForKey:@"orgName"];
+    NSString * appName = [options objectForKey:@"appName"];
+    NSString * baseUrl = @"https://api.usergrid.com/";
+    if([options objectForKey:@"baseUrl"] != nil) {
+        baseUrl = [options objectForKey:@"baseUrl"];
+    }
+    NSLog(@"UG Init");
+    
+    UGClient * usergridClient = [[UGClient alloc] initWithOrganizationId:orgName withApplicationID:appName baseURL:baseUrl];
+    //[UGClient getUniqueDeviceID];
+    NSString *deviceId = [options objectForKey:@"deviceId"];
+    NSString *thisDevice = [@"devices/" stringByAppendingString: deviceId];
+    NSString *message = [options objectForKey:@"message"];
+    UGClientResponse *response = [usergridClient pushAlert: message
+                                                 withSound: @"chime"
+                                                        to: thisDevice
+                                             usingNotifier: notifier];
+    
+    if (response.transactionState != kUGClientResponseSuccess) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"message not pushed"];
+        [self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"pushNotificationToDevice"]]];
+    } else {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"message pushed"];
+        [self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"pushNotificationToDevice"]]];
+    }
+}
+
+-(void)getDeviceId:(CDVInvokedUrlCommand*)command {
+    [self.callbackIds setValue:command.callbackId forKey:@"getDeviceId"];
+    NSString * deviceId = [UGClient getUniqueDeviceID];
+    NSMutableDictionary *results = [[NSMutableDictionary alloc] initWithObjectsAndKeys:deviceId, @"deviceId", nil];
+    CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
+    [self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getDeviceId"]]];
+}
+
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 	DLog(@"didRegisterForRemoteNotificationsWithDeviceToken:%@", deviceToken);
 
