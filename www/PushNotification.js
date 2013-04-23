@@ -55,6 +55,11 @@
 		document.dispatchEvent(ev);
 	};
 
+	// Call this to register with a specific push provider only supports Apigee.
+	PushNotification.prototype.registerWithSpecificProvider = function(options, callback){
+		cordova.exec(callback, callback, "PushNotification", "registerWithSpecificProvider", [options]);
+	}
+
 	cordova.addConstructor(function() {
 		if(!window.plugins) window.plugins = {};
 		window.plugins.pushNotification = new PushNotification();

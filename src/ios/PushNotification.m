@@ -11,6 +11,8 @@
 //#import <Cordova/JSONKit.h>
 #import <Cordova/CDVDebug.h>
 #import "OpenUDID.h"
+#import "UGClient.h"
+#import "UGClientResponse.h"
 
 @implementation PushNotification
 
@@ -53,6 +55,33 @@
 
 	//[[UIApplication sharedApplication] unregisterForRemoteNotifications];
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+
+}
+
+-(void)registerWithPushProvider:(CDVInvokedUrlCommand *)command {
+    NSLog(@"EQ:%@",[options objectForKey:@"provider"]);
+    [self.callbackIds setValue:command.callbackId forKey:@"registerWithPushProvider"];
+    if([[options objectForKey:@"provider"] isEqualToString:@"apigee"]) {
+        
+        NSDictionary *options = [command.arguments objectAtIndex:0];
+        NSString * orgName = [options objectForKey:@"orgName"];
+        NSString * appName = [options objectForKey:@"appName"];
+        NSString * baseUrl = @"https://api.usergrid.com/";
+        if([options objectForKey:@"baseUrl"] != nil) {
+            baseUrl = [options objectForKey:@"baseUrl"];
+        }
+        NSLog(@"UG Init");
+        
+        UGClient * usergridClient = [[UGClient alloc] initWithOrganizationId:orgName withApplicationID:appName baseURL:baseUrl];
+        NSLog(@"Registering for push w/apigee");
+        UGClientResponse *response = [usergridClient setDevicePushToken: [options objectForKey:@"token"] forNotifier: notifier];
+        if (response.transactionState != kUGClientResponseSuccess) {
+            [self failWithMessage:response.rawResponse withError:nil];
+        } else {
+            [self successWithMessage:@"device linked"];
+        }
+        
+    }
 
 }
 
