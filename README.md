@@ -110,7 +110,8 @@ Currently using Push Notifications through Apigee is the only method supported.
    * GCMIntentService.java NOTE: This class must share the namespace with your main activity class.
 
 2. Add the following XML Permissions to your Manifest.
-
+    
+    ```xml
     <permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" />
     <!-- App receives GCM messages. -->
@@ -123,10 +124,11 @@ Currently using Push Notifications through Apigee is the only method supported.
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-
+    ```
 
 3. Add the following XML to your `<application/>` tag.
-
+    
+    ```xml
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
               android:permission="com.google.android.c2dm.permission.SEND" >
         <intent-filter>
@@ -137,6 +139,7 @@ Currently using Push Notifications through Apigee is the only method supported.
     </receiver>
 
     <service android:name="GCMIntentService" />
+    ```
 
 4. Copy all the .jar files in the /libs folder to the /libs folder of your app.
 
