@@ -99,7 +99,9 @@ In order to support launch notifications (app starting from a remote notificatio
 
     return YES;
 
-## PLUGIN SETUP FOR ANDROID(@todo) ##
+## PLUGIN SETUP FOR ANDROID ##
+
+Currently using Push Notifications through Apigee is the only method supported.
 
 1. Add the following files to your project.
    * PushNotification.java
@@ -107,38 +109,7 @@ In order to support launch notifications (app starting from a remote notificatio
    * WakeLocker.java
    * GCMIntentService.java NOTE: This class must share the namespace with your main activity class.
 
-2. Add the following snippet to your main activity class.
-
-    ```java
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        super.loadUrl(Config.getStartUrl());
-        registerReceiver(notificationReceiver, new IntentFilter("org.usergrid.cordova.DISPLAY_MESSAGE"));
-    }
-
-    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            // Waking up mobile if it is sleeping
-            WakeLocker.acquire(getApplicationContext());
-
-            /**
-            * Take some action upon receiving a push notification here!
-            **/
-            String message = intent.getExtras().getString("data");
-            if (message == null) { message = "Empty Message"; }
-
-            Log.i("DEVICE.ID.CAUGHT?", message);
-    
-            WakeLocker.release();
-        }
-    };    
-    ```
-3. Add the following XML Permissions to your Manifest.
+2. Add the following XML Permissions to your Manifest.
 
     <permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" />
@@ -154,7 +125,7 @@ In order to support launch notifications (app starting from a remote notificatio
     <uses-permission android:name="android.permission.VIBRATE"/>
 
 
-4. Add the following XML to your `<application/>` tag.
+3. Add the following XML to your `<application/>` tag.
 
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
               android:permission="com.google.android.c2dm.permission.SEND" >
@@ -167,9 +138,9 @@ In order to support launch notifications (app starting from a remote notificatio
 
     <service android:name="GCMIntentService" />
 
-5. Copy all the .jar files in the /libs folder to the /libs folder of your app.
+4. Copy all the .jar files in the /libs folder to the /libs folder of your app.
 
-6. Add new entry with key `PushNotification` and value `org.usergrid.cordova.PushNotification` to `Plugins` in `res/xml/config.xml`
+5. Add new entry with key `PushNotification` and value `org.usergrid.cordova.PushNotification` to `Plugins` in `res/xml/config.xml`
 
 
     <plugin name="PushNotification" value="org.usergrid.cordova.PushNotification"/>
