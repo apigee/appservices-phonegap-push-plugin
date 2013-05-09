@@ -12,13 +12,13 @@
 	function PushNotification() {}
 	// Call this to register for push notifications and retreive a deviceToken
 	PushNotification.prototype.registerDevice = function(config, callback) {
-		if(typeof callback === "undefined" ) {
-			var callback = config;
+		console.log(device.platform);
+		if(device.platform === "Android") {
 			document.addEventListener('push-registration', function(event) {
 		        callback(event);
 		    });
 		    //Hack to catch the callbacks
-			cordova.exec(function(e){ console.log(e);}, function(e){console.log(e);}, "PushNotification", "registerDevice", []);
+			cordova.exec(function(e){ console.log(e);}, function(e){console.log(e);}, "PushNotification", "registerDevice", config ? [config] : []);
 		} else {
 			cordova.exec(callback, callback, "PushNotification", "registerDevice", config ? [config] : []);
 		}
