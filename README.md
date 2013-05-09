@@ -101,20 +101,78 @@ In order to support launch notifications (app starting from a remote notificatio
 
 ## PLUGIN SETUP FOR ANDROID(@todo) ##
 
-Using this plugin requires [Cordova Android](https://github.com/apache/incubator-cordova-android).
+1. Add the following files to your project.
+   * PushNotification.java
+   * Settings.java
+   * WakeLocker.java
+   * GCMIntentService.java NOTE: This class must share the namespace with your main activity class.
 
-1. Make sure your Android project has been [updated for Cordova](https://github.com/apache/incubator-cordova-android/blob/master/guides/Cordova%20Upgrade%20Guide.md)
-2. Merge both the `libs` and `src` folder from this plugin to your projet.
-3. Add the .js files to your `assets/www` folder on disk, and add reference(s) to the .js files using `<script>` tags in your html file(s)
+2. Add the following snippet to your main activity class.
+
+    ```java
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        super.loadUrl(Config.getStartUrl());
+        registerReceiver(notificationReceiver, new IntentFilter("org.usergrid.cordova.DISPLAY_MESSAGE"));
+    }
+
+    private final BroadcastReceiver notificationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // Waking up mobile if it is sleeping
+            WakeLocker.acquire(getApplicationContext());
+
+            /**
+            * Take some action upon receiving a push notification here!
+            **/
+            String message = intent.getExtras().getString("data");
+            if (message == null) { message = "Empty Message"; }
+
+            Log.i("DEVICE.ID.CAUGHT?", message);
+    
+            WakeLocker.release();
+        }
+    };    
+    ```
+3. Add the following XML Permissions to your Manifest.
+
+    <permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="YOUR.APP.NAMESPACE.permission.C2D_MESSAGE" />
+    <!-- App receives GCM messages. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- GCM connects to Google Services. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
 
-    `<script type="text/javascript" src="/js/plugins/FacebookConnect.js"></script>`
+4. Add the following XML to your `<application/>` tag.
+
+    <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
+              android:permission="com.google.android.c2dm.permission.SEND" >
+        <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+            <category android:name="YOUR.APP.NAMESPACE" />
+        </intent-filter>
+    </receiver>
+
+    <service android:name="GCMIntentService" />
+
+5. Copy all the .jar files in the /libs folder to the /libs folder of your app.
+
+6. Add new entry with key `PushNotification` and value `org.usergrid.cordova.PushNotification` to `Plugins` in `res/xml/config.xml`
 
 
-4. Add new entry with key `PushNotification` and value `org.apache.cordova.plugins.PushNotification` to `Plugins` in `res/xml/config.xml`
-
-
-    <plugin name="PushNotification" value="org.apache.cordova.plugins.PushNotification"/>
+    <plugin name="PushNotification" value="org.usergrid.cordova.PushNotification"/>
 
 
 ## JAVASCRIPT INTERFACE (IOS/ANDROID) ##

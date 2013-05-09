@@ -10,10 +10,18 @@
 (function(cordova) {
 
 	function PushNotification() {}
-
 	// Call this to register for push notifications and retreive a deviceToken
 	PushNotification.prototype.registerDevice = function(config, callback) {
-		cordova.exec(callback, callback, "PushNotification", "registerDevice", config ? [config] : []);
+		if(typeof callback === "undefined" ) {
+			var callback = config;
+			document.addEventListener('push-registration', function(event) {
+		        callback(event);
+		    });
+		    //Hack to catch the callbacks
+			cordova.exec(function(e){ console.log(e);}, function(e){console.log(e);}, "PushNotification", "registerDevice", []);
+		} else {
+			cordova.exec(callback, callback, "PushNotification", "registerDevice", config ? [config] : []);
+		}
 	};
 
 	// Call this to retreive pending notification received while the application is in background or at launch
@@ -63,14 +71,22 @@
 		document.dispatchEvent(ev);
 	};
 
+	PushNotification.prototype.registrationCallback = function(registrationMessage) {
+		var ev = document.createEvent('HTMLEvents');
+		ev.deviceId = registrationMessage.deviceId;
+		ev.initEvent('push-registration', true, true, arguments);
+		document.dispatchEvent(ev);
+	};
+
 	// Call this to register with a specific push provider only supports Apigee.
 	PushNotification.prototype.registerWithPushProvider = function(options, callback){
 		cordova.exec(callback, callback, "PushNotification", "registerWithPushProvider", [options]);
-	}
+	};
  
-	cordova.addConstructor(function() {
+	/*cordova.addConstructor(function() {
 		if(!window.plugins) window.plugins = {};
 		window.plugins.pushNotification = new PushNotification();
-	});
-
-})(window.cordova || window.Cordova);
+	});*/
+	
+	window.pushNotification = new PushNotification();
+})((window.cordova || window.Cordova));
