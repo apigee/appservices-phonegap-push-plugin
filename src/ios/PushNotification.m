@@ -77,7 +77,7 @@ NSString * notifier = @"apple";
         
         UGClient * usergridClient = [[UGClient alloc] initWithOrganizationId:orgName withApplicationID:appName baseURL:baseUrl];
         NSLog(@"Registering for push w/apigee");
-        UGClientResponse *response = [usergridClient setDevicePushToken:[options objectForKey:@"token"] forNotifier:notifier];
+        UGClientResponse *response = [usergridClient setDevicePushToken:[options objectForKey:@"token"] forNotifier:[options objectForKey:@"notifier"]]];
         if (response.transactionState != kUGClientResponseSuccess) {
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"device not linked"];
             [self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"registerWithPushProvider"]]];
@@ -109,7 +109,7 @@ NSString * notifier = @"apple";
     UGClientResponse *response = [usergridClient pushAlert: message
                                                  withSound: @"chime"
                                                         to: thisDevice
-                                             usingNotifier: notifier];
+                                             usingNotifier: [options objectForKey:@"notifier"]]];
     
     if (response.transactionState != kUGClientResponseSuccess) {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"message not pushed"];
