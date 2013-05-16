@@ -171,6 +171,7 @@ Currently using Push Notifications through Apigee is the only method supported.
         console.log(status);
         if(status.deviceToken) {
             var options = {
+                "notifier":"YOUR NOTIFIER NAME"
                 "provider":"apigee",
                 "orgName":"YOUR APIGEE.COM USERNAME",
                 "appName":"YOU APIGEE.COM APP",
