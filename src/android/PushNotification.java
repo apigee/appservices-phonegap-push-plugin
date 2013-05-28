@@ -36,9 +36,11 @@ public class PushNotification extends Plugin {
 				
 				Client client = new Client();
 				JSONObject options = args.getJSONObject(0);
-				String apiUrl = options.getString("apiUrl");
-				if(apiUrl == null) {
-					apiUrl = "https://api.usergrid.org/";
+				String apiUrl = null;
+				if(options.has("apiUrl")) {
+					apiUrl = options.getString("apiUrl");
+				} else {
+					apiUrl = "https://api.usergrid.com/";
 				}
 				
 				
@@ -87,9 +89,11 @@ public class PushNotification extends Plugin {
 				
 				Client client = new Client();
 				JSONObject options = args.getJSONObject(0);
-				String apiUrl = options.getString("apiUrl");
-				if(apiUrl == null) {
-					apiUrl = "https://api.usergrid.org/";
+				String apiUrl = null;
+				if(options.has("apiUrl")) {
+					apiUrl = options.getString("apiUrl");
+				} else {
+					apiUrl = "https://api.usergrid.com/";
 				}
 				
 				
