@@ -9,6 +9,10 @@ This is a fork by Matthew Dobson for Apigee Corporation. We've added third party
 
 * This was inspired by the now orphaned [ios-phonegap-plugin](https://github.com/urbanairship/ios-phonegap-plugin) build by Urban Airship.
 
+## COMPATIBILITY ##
+
+This plugin is compatible with PhoneGap 2.6.
+
 ## PLUGIN SETUP FOR IOS ##
 
 Using this plugin requires [Cordova iOS](https://github.com/apache/incubator-cordova-ios).
